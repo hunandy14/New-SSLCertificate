@@ -155,11 +155,18 @@ try {
         openssl pkcs12 -export -out $files.pfx -inkey $files.key -in $files.crt -certfile $CACrtPath -passout "pass:$PfxPasswd"
         if ($LASTEXITCODE -ne 0) { Write-Error "PFX 匯出失敗" }
     }
-
+    
     Write-Host "`n✅ 完成！輸出檔案：" -ForegroundColor Green
     Write-Host "   - 伺服器私鑰：$($files.key)"
     Write-Host "   - 憑證簽名請求：$($files.csr)"
     Write-Host "   - SSL 憑證：$($files.crt)"
+    
+    # 顯示當前序列號
+    $srlFile = Join-Path (Split-Path $CAKeyPath) (Split-Path $CAKeyPath -LeafBase + ".srl")
+    if (Test-Path $srlFile) {
+        $serialNumber = (Get-Content $srlFile -Raw).Trim()
+        Write-Host "   - 當前序列號：$serialNumber"
+    }
     
     if ($PSBoundParameters.ContainsKey('PfxPasswd')) {
         $passwordInfo = if ($PfxPasswd -eq "") { "無密碼" } else { "密碼：$PfxPasswd" }
