@@ -162,7 +162,7 @@ try {
     Write-Host "   - SSL 憑證：$($files.crt)"
     
     # 顯示當前序列號
-    $srlFile = Join-Path (Split-Path $CAKeyPath) (Split-Path $CAKeyPath -LeafBase + ".srl")
+    $srlFile = Join-Path (Split-Path $CAKeyPath) ((Split-Path $CAKeyPath -LeafBase) + ".srl")
     if (Test-Path $srlFile) {
         $serialNumber = (Get-Content $srlFile -Raw).Trim()
         Write-Host "   - 當前序列號：$serialNumber"
